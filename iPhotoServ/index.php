@@ -4,6 +4,7 @@ include "conf.php";
 include "PlistParser.inc";
 
 $AlbumDataXmlCacheName = "cache/AlbumData.xml.".md5_file($_IPHOTOSERV['albumdata_xml_path']).".srz";
+if (!is_dir("cache")) mkdir("cache");
 if (file_exists($AlbumDataXmlCacheName)) {
 	$AlbumDataXml = unserialize(file_get_contents($AlbumDataXmlCacheName));
 } else {
