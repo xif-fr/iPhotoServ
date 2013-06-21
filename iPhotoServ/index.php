@@ -1,15 +1,19 @@
 <?php
 
+namespace CFPropertyList;
+
 include "conf.php";
-include "PlistParser.inc";
+include "CFPropertyList/CFPropertyList.php";
 
 $AlbumDataXmlCacheName = "cache/AlbumData.xml.".md5_file($_IPHOTOSERV['albumdata_xml_path']).".srz";
 if (!is_dir("cache")) mkdir("cache");
 if (file_exists($AlbumDataXmlCacheName)) {
 	$AlbumDataXml = unserialize(file_get_contents($AlbumDataXmlCacheName));
 } else {
-	$PlistParser = new plistParser();
-	$AlbumDataXml = $PlistParser->parseFile($_IPHOTOSERV['albumdata_xml_path']);
+	$AlbumDataXmlFile = str_replace("\0\0\0\0", "", file_get_contents($_IPHOTOSERV['albumdata_xml_path']));
+	$PlistParser = new CFPropertyList;
+	$PlistParser->parse($AlbumDataXmlFile);
+	$AlbumDataXml = $PlistParser->toArray();
 	file_put_contents($AlbumDataXmlCacheName, serialize($AlbumDataXml));
 }
 
@@ -157,7 +161,6 @@ if (isset($_GET['folder'])) {
 				height: 100%;
 			}
 		</style>
-		<script>document.createElement('img').src = "/return_btn/return_btn_black_push.png";</script>
 	</head>
 	<body>
 		<nav>
@@ -206,4 +209,7 @@ if (isset($_GET['folder'])) {
 			?>
 		<div>
 	</body>
+	<script>
+		document.createElement('img').src = "/return_btn/return_btn_black_push.png";
+	</script>
 </html>
